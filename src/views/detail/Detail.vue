@@ -31,6 +31,7 @@
     </scroll>
     <back-top @click.native="backClick" v-show="isShowBackTop"></back-top>
     <detail-bottom-bar @addToCart="addToCart"></detail-bottom-bar>
+    <toast :message="message" :show="show"></toast>
   </div>
 </template>
 
@@ -45,7 +46,7 @@ import DetailCommentInfo from "./childComps/DetailCommentInfo.vue";
 import DetailBottomBar from "./childComps/DetailBottomBar.vue";
 import Scroll from "components/common/scroll/Scroll";
 import GoodsList from "components/content/goods/GoodsList";
-
+import Toast from "components/common/toast/Toast";
 import {
   getDetail,
   Goods,
@@ -73,6 +74,8 @@ export default {
       themeTopYs: [],
       getThemeTopY: null,
       currentIndex: 0,
+      message: "",
+      show: false,
     };
   },
   components: {
@@ -86,6 +89,7 @@ export default {
     DetailBottomBar,
     Scroll,
     GoodsList,
+    Toast,
   },
 
   created() {
@@ -199,7 +203,14 @@ export default {
       product.iid = this.iid;
       //2.将商品添加到购物车
       // this.$store.commit("addToCart", product);
-      this.$store.dispatch("addCart", product);
+      this.$store.dispatch("addCart", product).then((res) => {
+        this.show = true;
+        this.message = res;
+        setTimeout(() => {
+          this.show = false;
+          this.message = "";
+        }, 1500);
+      });
     },
   },
 };
